@@ -1,0 +1,53 @@
+{
+  "brave": {
+    "label": "Brave",
+    "icon": "🦁",
+    "command": "\"C:\\Users\\atri\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe\"",
+    "mode": "popen"
+  },
+  "firefox": {
+    "label": "Firefox",
+    "icon": "🦊",
+    "command": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
+    "mode": "popen"
+  },
+  "terminal": {
+    "label": "Windows Terminal",
+    "icon": "⌨️",
+    "command": "wt",
+    "mode": "popen"
+  },
+  "explorer": {
+    "label": "File Explorer",
+    "icon": "📁",
+    "command": "explorer.exe",
+    "mode": "popen"
+  },
+  "msys2": {
+    "label": "MSYS2 MinGW",
+    "icon": "🐧",
+    "command": "C:\\msys64\\usr\\bin\\mintty.exe -i /msys2.ico /usr/bin/bash --login -i",
+    "mode": "popen"
+  },
+  "taskmanager": {
+    "label": "Task Manager",
+    "icon": "⚙️",
+    "command": "taskmgr.exe",
+    "mode": "popen"
+  },
+  "armoury": {
+    "label": "Armoury Crate",
+    "icon": "🛡️",
+    "command": [
+    "explorer.exe",
+    "shell:appsFolder\\B9ECED6F.ArmouryCrate_qmba6cd70vzyy!App"
+  ],
+    "mode": "popen"
+  },
+  "control": {
+    "label": "Control Panel",
+    "icon": "🧭",
+    "command": "control.exe",
+    "mode": "popen"
+  }
+}
