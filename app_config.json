@@ -1,43 +1,43 @@
 {
   "brave": {
     "label": "Brave",
-    "icon": "🦁",
+    "icon": "/static/icons/brave.webp",
     "command": "\"C:\\Users\\atri\\AppData\\Local\\BraveSoftware\\Brave-Browser\\Application\\brave.exe\"",
     "mode": "popen"
   },
   "firefox": {
     "label": "Firefox",
-    "icon": "🦊",
+    "icon": "/static/icons/firefox.png",
     "command": "C:\\Program Files\\Mozilla Firefox\\firefox.exe",
     "mode": "popen"
   },
   "terminal": {
     "label": "Windows Terminal",
-    "icon": "⌨️",
+    "icon": "/static/icons/win_ter.png",
     "command": "wt",
     "mode": "popen"
   },
   "explorer": {
     "label": "File Explorer",
-    "icon": "📁",
+    "icon": "/static/icons/file_exp.png",
     "command": "explorer.exe",
     "mode": "popen"
   },
   "msys2": {
     "label": "MSYS2 MinGW",
-    "icon": "🐧",
+    "icon": "/static/icons/msys2.png",
     "command": "C:\\msys64\\usr\\bin\\mintty.exe -i /msys2.ico /usr/bin/bash --login -i",
     "mode": "popen"
   },
   "taskmanager": {
     "label": "Task Manager",
-    "icon": "⚙️",
+    "icon": "/static/icons/task.png",
     "command": "taskmgr.exe",
     "mode": "popen"
   },
   "armoury": {
     "label": "Armoury Crate",
-    "icon": "🛡️",
+    "icon": "/static/icons/crate.png",
     "command": [
     "explorer.exe",
     "shell:appsFolder\\B9ECED6F.ArmouryCrate_qmba6cd70vzyy!App"
@@ -46,7 +46,7 @@
   },
   "control": {
     "label": "Control Panel",
-    "icon": "🧭",
+    "icon": "/static/icons/control_panel.webp",
     "command": "control.exe",
     "mode": "popen"
   }
