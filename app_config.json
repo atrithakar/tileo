@@ -49,5 +49,41 @@
     "icon": "/static/icons/control_panel.webp",
     "command": "control.exe",
     "mode": "popen"
+  },
+  "gta-de": {
+    "label": "GTA DE",
+    "icon": "/static/icons/gtade.png",
+    "command": "\"C:\\Games\\GTA - The Trilogy - DE\\Launcher.exe\"",
+    "mode": "popen"
+  },
+  "gta-iv": {
+    "label": "GTA IV",
+    "icon": "/static/icons/gta4.png",
+    "command": "\"C:\\Games\\Grand Theft Auto IV - The Complete Edition\\GTAIV.exe\"",
+    "mode": "popen"
+  },
+  "calculator": {
+    "label": "Calculator",
+    "icon": "/static/icons/calc.png",
+    "command": "calc.exe",
+    "mode": "popen"
+  },
+  "notepad": {
+    "label": "Notepad",
+    "icon": "/static/icons/notepad.png",
+    "command": "notepad.exe",
+    "mode": "popen"
+  },
+  "msword": {
+    "label": "MS Word",
+    "icon": "/static/icons/word.png",
+    "command": "\"C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE\"",
+    "mode": "popen"
+  },
+  "rdr1": {
+    "label": "Red Dead Redemption",
+    "icon": "/static/icons/rdr1.png",
+    "command": "\"C:\\Games\\Red Dead Redemption\\RDR.exe\"",
+    "mode": "popen"
   }
 }
