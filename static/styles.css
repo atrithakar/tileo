@@ -58,6 +58,21 @@ body{
   font-size:34px;
   margin-bottom:8px;
 }
+
+.icon-img {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+  object-fit: contain;
+  display: block;
+}
+
+.icon {
+  font-size: 34px;
+  margin-bottom: 8px;
+}
+
+
 .label{
   font-size:14px;
   color:var(--text);
