@@ -1,92 +1,188 @@
-:root{
-  --bg:#0f1724;
-  --card:#0b1220;
-  --accent:#12b886;
-  --text:#e6eef8;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;
-  font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background:
-    linear-gradient(180deg, rgba(20,25,40,1) 0%, rgba(6,9,16,1) 100%);
-  color:var(--text);
-  -webkit-font-smoothing:antialiased;
+:root {
+  --bg: #0f1724;
+  --card: #0b1220;
+  --accent: #12b886;
+  --text: #e6eef8;
 }
 
-.container{
-  max-width:900px;
-  margin:18px auto;
-  padding:16px;
+/* Basic reset + safe scrolling */
+* { box-sizing: border-box; }
+html, body {
+  height: 100%;
+  min-height: 100vh;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+  overflow-y: auto;
+  background: linear-gradient(180deg, rgba(20,25,40,1) 0%, rgba(6,9,16,1) 100%);
+  color: var(--text);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
 }
 
-.title{
-  margin:8px 0 18px;
-  font-size:20px;
-  text-align:center;
-  color:var(--accent);
+/* Container keeps content centered and gives breathing room on small screens */
+.container {
+  max-width: 900px;
+  margin: 18px auto;
+  padding: clamp(10px, 2.5vw, 18px);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px); /* mobile safe area */
 }
 
-/* responsive grid: 2 cols on tiny, 4 cols on phones, 8 icons shown (grid auto-flow) */
-.grid{
-  display:grid;
-  gap:12px;
-  grid-template-columns: repeat(4, 1fr);
+/* Title responsive sizing */
+.title {
+  margin: 8px 0 18px;
+  font-size: clamp(16px, 3.2vw, 20px);
+  text-align: center;
+  color: var(--accent);
 }
-@media (max-width:420px){
-  .grid{ grid-template-columns: repeat(2,1fr); }
+
+/* Grid: auto-fit with minimum tile width; prevents overlap by allowing scrolling if needed */
+.grid {
+  display: grid;
+  gap: clamp(8px, 1.8vw, 14px);
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-auto-rows: 1fr;
+  /* limit grid height so footer remains visible; allows grid to scroll when vertical space is tight */
+  max-height: calc(100vh - 220px);
+  overflow: auto;
+  padding-bottom: 6px;
 }
-.tile{
+
+/* Prevent the grid from stealing all vertical space on very short screens */
+@media (max-height: 480px) {
+  .grid { max-height: calc(100vh - 160px); }
+}
+
+/* Tile styling: responsive padding and height; use clamp to adapt across devices */
+.tile {
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
-  border-radius:14px;
-  padding:18px;
-  min-height:110px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  text-align:center;
-  cursor:pointer;
+  border-radius: 14px;
+  padding: clamp(10px, 1.8vh, 18px);
+  min-height: clamp(80px, 18vh, 140px); /* reduces height in landscape / short screens */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
   transition: transform .12s ease, box-shadow .12s ease;
-  user-select:none;
+  user-select: none;
+  overflow: hidden; /* prevents internal overflow */
 }
-.tile:active{ transform: scale(.985); }
-.tile:hover{ box-shadow: 0 8px 18px rgba(0,0,0,0.35); }
 
-.icon{
-  font-size:34px;
-  margin-bottom:8px;
+.tile:active {
+  transform: scale(.985);
+}
+.tile:hover {
+  box-shadow: 0 8px 18px rgba(0,0,0,0.35);
+}
+
+/* Icon styles */
+.icon {
+  font-size: clamp(20px, 3.8vw, 34px);
+  margin-bottom: 8px;
 }
 
 .icon-img {
-  width: 48px;
-  height: 48px;
+  width: clamp(36px, 9vw, 56px);
+  height: clamp(36px, 9vw, 56px);
   margin-bottom: 8px;
   object-fit: contain;
   display: block;
 }
 
-.icon {
-  font-size: 34px;
-  margin-bottom: 8px;
+/* Label should never wrap into multiple lines and cause layout shifts; ellipsize instead */
+.label {
+  font-size: clamp(12px, 2.2vw, 14px);
+  color: var(--text);
+  opacity: .95;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  padding: 0 6px;
+  box-sizing: border-box;
 }
 
-
-.label{
-  font-size:14px;
-  color:var(--text);
-  opacity:.95;
+/* Footer layout: flexible and will wrap into multiple rows instead of overlapping */
+.footer {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap; /* IMPORTANT: allows elements to wrap rather than overlap */
 }
 
-/* footer */
-.footer{
-  margin-top:16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:12px;
-  flex-wrap:wrap;
+/* Make footer children flexible and shrinkable on narrow screens */
+.footer > * {
+  flex: 0 1 auto;
+  min-width: 0; /* allows children to shrink below their content size when necessary */
 }
-.footer input{ padding:6px 8px; border-radius:8px; border:1px solid rgba(255,255,255,0.06); background:transparent; color:var(--text) }
-.footer button{ padding:6px 10px; border-radius:8px; border:0; background:var(--accent); color:#032018; cursor:pointer }
+
+/* Inputs & buttons responsive sizing */
+.footer input {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: transparent;
+  color: var(--text);
+  max-width: 220px;
+  width: clamp(120px, 30vw, 220px);
+}
+
+.footer button {
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 0;
+  background: var(--accent);
+  color: #032018;
+  cursor: pointer;
+}
+
+/* Token area (keeps token UI tidy, wraps gracefully on small heights) */
+#tokenContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#tokenStatus {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+#tokenStatus small { display:inline-block; }
+
+/* Ensure the page is usable in landscape on small devices */
+@media (orientation: landscape) and (max-height: 420px) {
+  .title { font-size: clamp(14px, 3.2vw, 18px); margin-bottom: 10px; }
+  .container { padding: 10px; }
+  .grid {
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* more columns, smaller tiles */
+    max-height: calc(100vh - 140px); /* leave room for smaller footer */
+  }
+  .tile {
+    min-height: clamp(64px, 16vh, 100px);
+    padding: 10px;
+  }
+  .label { font-size: 12px; }
+  .footer { gap: 8px; }
+  .footer input { max-width: 160px; width: clamp(100px, 30vw, 160px); }
+}
+
+/* Extra safeguard: if the viewport is extremely short, allow the whole page to scroll and avoid overlap */
+@media (max-height: 360px) {
+  .grid { max-height: calc(100vh - 120px); }
+  .tile { min-height: 56px; padding: 8px; }
+}
+
+/* Accessibility / focus states */
+.tile:focus { outline: 2px solid rgba(18,184,134,0.2); outline-offset: 2px; }
+.footer button:focus, .footer input:focus { outline: 2px solid rgba(18,184,134,0.12); outline-offset: 2px; }
+
+/* Prevent any images or text from overflowing their containers */
+img { max-width: 100%; height: auto; display: block; }
+
+/* End of responsive rules */
