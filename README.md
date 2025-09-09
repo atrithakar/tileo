@@ -15,12 +15,21 @@ Step 2:
 cd tileo
 ```
 
-Step 3: modify `app_config.json` according to your liking.
+Step 3: modify `app_config.json` according to your preferences.
 
 Step 4: run the following commands
 ```bash
-python -m venv venv
-./venv/Scripts/activate
-pip install flask
+python -m venv venv (for the first time only)
+./venv/Scripts/activate (for the first time only)
+pip install flask (for the first time only)
 python app.py
 ```
+
+# Why TileO?
+It often happens that I have many apps and tabs opened in my machine simultaneously, and during that, navigating my way thru all the apps and tabs makes it a little harder to open an app that I want to open. This is counter-productive too. So TileO helps me to open an app that I want to open by just tapping on my mobile screen.
+
+Speaking of mobiles, this way you can give your old mobile phone a second life and extract more value from it by repurposing it to be a launcher for your PC apps.
+
+**Fun fact**: This also gives cockpit vibes, having a mobile phone to the left or right side of your main machine, angled towards yourself, running **TileO**
+
+And yes, this is open source so you can trust it, unlike some other third party apps which steal your data. You can easily customize this according to your preferences too.
