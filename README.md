@@ -21,5 +21,6 @@ Step 4: run the following commands
 ```bash
 python -m venv venv
 ./venv/Scripts/activate
+pip install flask
 python app.py
 ```
