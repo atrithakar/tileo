@@ -442,7 +442,7 @@ img { max-width: 100%; height: auto; display: block; }
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 18px !important;
 }
 
 .music-controls .sys-btn:active {
@@ -468,7 +468,7 @@ img { max-width: 100%; height: auto; display: block; }
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
   color: var(--text);
-  font-size: 17px;
+  font-size: 18px !important;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -499,7 +499,7 @@ img { max-width: 100%; height: auto; display: block; }
   background: rgba(255,255,255,0.05);
   border: 1px solid rgba(255,255,255,0.1);
   color: var(--text);
-  font-size: 13px;
+  font-size: 14px !important;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -527,15 +527,15 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .clock-large {
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   line-height: 1.2;
 }
 
 .clock-small {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
   color: var(--accent);
   line-height: 1;
@@ -584,11 +584,11 @@ img { max-width: 100%; height: auto; display: block; }
   }
   
   .clock-large {
-    font-size: 12px;
+    font-size: 24px;
   }
   
   .clock-small {
-    font-size: 16px;
+    font-size: 32px;
   }
 }
 
