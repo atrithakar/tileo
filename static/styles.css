@@ -13,7 +13,7 @@ html, body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -webkit-overflow-scrolling: touch;
-  overflow-y: auto;
+  overflow-y: hidden;
   background: linear-gradient(180deg, rgba(20,25,40,1) 0%, rgba(6,9,16,1) 100%);
   color: var(--text);
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
@@ -51,7 +51,7 @@ html, body {
   scroll-snap-type: none;
   width: 100vw;
   height: 100%;
-  -webkit-overflow-scrolling: auto;
+  -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
   position: relative;
 }
@@ -310,3 +310,285 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 /* End of file */
+
+/* System Controls Layout - Mobile Landscape Optimized */
+.system-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 12px;
+  padding: 12px 8px 12px 12px;
+  box-sizing: border-box;
+}
+
+/* Top row: Brightness and Volume sliders */
+.sys-sliders {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  height: 80px;
+}
+
+.slider-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
+  border-radius: 14px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.slider-icon {
+  font-size: 24px;
+  min-width: 28px;
+}
+
+.slider-label {
+  font-size: 14px;
+  color: var(--text);
+  min-width: 70px;
+  font-weight: 500;
+}
+
+.slider {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.1);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.slider-value {
+  font-size: 14px;
+  color: var(--text);
+  min-width: 36px;
+  text-align: right;
+  font-weight: 600;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Middle section: 4-column grid */
+.sys-middle {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 16px;
+  flex: 1;
+}
+
+/* Music card (large left card) */
+.music-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
+  border-radius: 14px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.music-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.music-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.music-time {
+  font-size: 13px;
+  color: rgba(230,238,248,0.8);
+  min-width: 44px;
+}
+
+.music-prog {
+  flex: 1;
+}
+
+.music-controls {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+.music-controls .sys-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.music-controls .sys-btn:active {
+  transform: scale(0.95);
+}
+
+/* Power options card */
+.power-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.power-card .sys-btn {
+  width: 100%;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  font-size: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.power-card .sys-btn:active {
+  transform: scale(0.98);
+}
+
+/* Toggles card */
+.toggles-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.toggles-card .sys-btn {
+  width: 100%;
+  height: 48px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: var(--text);
+  font-size: 17px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+.toggles-card .sys-btn:active {
+  transform: scale(0.98);
+}
+
+/* Clock card */
+.clock-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+}
+
+.clock-large {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.clock-small {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* Bottom spacer */
+.sys-bottom {
+  height: 8px;
+}
+
+/* Responsive adjustments for smaller landscape screens */
+@media (orientation: landscape) and (max-height: 500px) {
+  .sys-sliders {
+    height: 50px;
+  }
+  
+  .slider-card {
+    padding: 6px 10px;
+  }
+  
+  .sys-middle {
+    gap: 10px;
+  }
+  
+  .music-card, .power-card, .toggles-card, .clock-card {
+    padding: 12px;
+  }
+  
+  .music-title {
+    font-size: 14px;
+  }
+  
+  .music-controls .sys-btn {
+    width: 36px;
+    height: 36px;
+  }
+  
+  .power-card .sys-btn {
+    height: 32px;
+    font-size: 11px;
+  }
+  
+  .toggles-card .sys-btn {
+    height: 38px;
+    font-size: 11px;
+  }
+  
+  .clock-large {
+    font-size: 12px;
+  }
+  
+  .clock-small {
+    font-size: 16px;
+  }
+}
+
