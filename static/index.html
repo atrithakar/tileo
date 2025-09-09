@@ -1,6 +1,5 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -16,11 +15,17 @@
   <link rel="manifest" href="/static/manifest.json">
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
-
 <body>
   <main class="container">
     <h1 class="title">TileO</h1>
-    <div id="grid" class="grid"></div>
+
+    <!-- Paged area: pagesWrap contains page elements (each page holds a grid of tiles) -->
+    <div class="grid-container">
+      <div id="pagesWrap" class="grid-pages" aria-live="polite"></div>
+    </div>
+
+    <!-- pagination dots -->
+    <div id="pager" class="page-indicators" role="tablist" aria-label="Pages"></div>
 
     <div class="footer">
       <small>Tap an icon to launch on PC</small>
@@ -55,5 +60,4 @@
   <script src="/static/landscape.js" defer></script>
   <script src="/static/script.js" defer></script>
 </body>
-
 </html>

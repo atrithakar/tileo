@@ -21,10 +21,12 @@ html, body {
 
 /* Container keeps content centered and gives breathing room on small screens */
 .container {
-  max-width: 900px;
-  margin: 18px auto;
+  max-width: 100vw;
+  width: 100vw;
+  margin: 0;
   padding: clamp(10px, 2.5vw, 18px);
   padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px); /* mobile safe area */
+  overflow: hidden;
 }
 
 /* Title responsive sizing */
@@ -35,21 +37,97 @@ html, body {
   color: var(--accent);
 }
 
-/* Grid: auto-fit with minimum tile width; prevents overlap by allowing scrolling if needed */
-.grid {
-  display: grid;
-  gap: clamp(8px, 1.8vw, 14px);
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  grid-auto-rows: 1fr;
-  /* limit grid height so footer remains visible; allows grid to scroll when vertical space is tight */
-  max-height: calc(100vh - 220px);
-  overflow: auto;
-  padding-bottom: 6px;
+/* PAGINATED GRID: Horizontal scrolling pages with 8 apps each (4 cols x 2 rows) */
+.grid-container {
+  width: 100vw;
+  height: calc(100vh - 220px);
+  overflow: hidden;
+  position: relative;
 }
 
-/* Prevent the grid from stealing all vertical space on very short screens */
-@media (max-height: 480px) {
-  .grid { max-height: calc(100vh - 160px); }
+.grid-pages {
+  display: flex;
+  overflow-x: hidden;
+  scroll-snap-type: none;
+  width: 100vw;
+  height: 100%;
+  -webkit-overflow-scrolling: auto;
+  overscroll-behavior-x: contain;
+  position: relative;
+}
+
+.grid-pages::-webkit-scrollbar {
+  display: none;
+}
+
+.grid-pages {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.grid-page {
+  flex: 0 0 100vw;
+  width: 100vw;
+  height: 100%;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: clamp(8px, 2vw, 16px);
+  padding: 0 clamp(15px, 3vw, 25px);
+  box-sizing: border-box;
+}
+
+/* Legacy .grid for backwards compatibility */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: clamp(8px, 2vw, 16px);
+  width: 100vw;
+  height: calc(100vh - 220px);
+  padding: 0 clamp(15px, 3vw, 25px);
+  box-sizing: border-box;
+}
+
+/* Page indicator dots */
+.page-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.page-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transition: background 0.2s ease;
+  cursor: pointer;
+}
+
+.page-dot.active {
+  background: var(--accent);
+}
+
+/* Landscape mobile optimization */
+@media (orientation: landscape) and (max-height: 500px) {
+  .grid-container,
+  .grid {
+    height: calc(100vh - 120px);
+  }
+  
+  .grid-page {
+    gap: clamp(8px, 1.5vw, 15px);
+    padding: 0 clamp(10px, 2vw, 20px);
+  }
+  
+  .grid {
+    gap: clamp(8px, 1.5vw, 15px);
+    padding: 0 clamp(10px, 2vw, 20px);
+  }
 }
 
 /* Tile styling: responsive padding and height; use clamp to adapt across devices */
@@ -158,10 +236,17 @@ html, body {
 @media (orientation: landscape) and (max-height: 420px) {
   .title { font-size: clamp(14px, 3.2vw, 18px); margin-bottom: 10px; }
   .container { padding: 10px; }
+  .grid-container,
+  .grid {
+    height: calc(100vh - 140px); /* leave room for smaller footer */
+  }
+  .grid-page {
+    gap: 10px;
+    padding: 0 15px;
+  }
   .grid {
     gap: 10px;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); /* more columns, smaller tiles */
-    max-height: calc(100vh - 140px); /* leave room for smaller footer */
+    padding: 0 15px;
   }
   .tile {
     min-height: clamp(64px, 16vh, 100px);
