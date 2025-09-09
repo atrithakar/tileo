@@ -183,6 +183,7 @@ function buildSystemPage() {
   toggles.innerHTML = `
     <button class="sys-btn" id="toggleMute">Toggle Mute</button>
     <button class="sys-btn" id="toggleTheme">Toggle Dark/Light</button>
+    <button class="sys-btn" id="nextPageBtn">Next Page</button>
   `;
   mid.appendChild(toggles);
 
@@ -227,6 +228,7 @@ function setupSystemHandlers() {
 
   const toggleMute = document.getElementById("toggleMute");
   const toggleTheme = document.getElementById("toggleTheme");
+  const nextPageBtn = document.getElementById("nextPageBtn");
 
   const powerButtons = Array.from(document.querySelectorAll('.power-card .sys-btn'));
 
@@ -269,7 +271,20 @@ function setupSystemHandlers() {
   // toggles
   toggleMute.addEventListener("click", ()=> fetch("/system/mute", { method:"POST" }));
   toggleTheme.addEventListener("click", ()=> fetch("/system/theme", { method:"POST" }));
-
+  
+  // Next Page button
+  if (nextPageBtn) {
+    nextPageBtn.addEventListener("click", ()=> {
+      if (PAGES_WRAP.children.length > 1) {
+        const firstAppPage = PAGES_WRAP.children[1];
+        if (firstAppPage) {
+          PAGES_WRAP.scrollTo({ left: firstAppPage.offsetLeft, behavior: 'smooth' });
+          setActiveDot(1);
+        }
+      }
+    });
+  }
+  
   // power
   powerButtons.forEach(b => b.addEventListener("click", (ev) => {
     const action = ev.currentTarget.getAttribute("data-power");
@@ -368,6 +383,179 @@ async function renderAllPages() {
   PAGES_WRAP.addEventListener('scroll', ()=> {
     window.requestAnimationFrame(updateActiveDotOnScroll);
   });
+
+  // Setup atomic scrolling functionality with selective blocking
+  setupSwipePaging();
+}
+
+// Setup atomic scrolling functionality
+function setupSwipePaging() {
+  let startX = null;
+  let startY = null;
+  let dragging = false;
+  let blocked = false;
+  const SWIPE_THRESHOLD = 60;
+
+  // Check if element is a control that should block swiping
+  function isControlElement(element) {
+    if (!element) return false;
+    
+    const controlSelectors = [
+      '.slider', '.music-prog', '.sys-btn', '.slider-card', '.music-card',
+      '.power-card', '.toggles-card', '.clock-card', 'input', 'button'
+    ];
+    
+    return controlSelectors.some(sel => element.closest && element.closest(sel));
+  }
+
+  // Get current page index
+  function getCurrentPageIndex() {
+    const pageWidth = PAGES_WRAP.clientWidth;
+    return Math.round(PAGES_WRAP.scrollLeft / (pageWidth || 1));
+  }
+
+  // Go to specific page
+  function goToPage(pageIndex) {
+    const totalPages = PAGES_WRAP.children.length;
+    if (pageIndex < 0 || pageIndex >= totalPages) return;
+    
+    const pageWidth = PAGES_WRAP.clientWidth;
+    const targetScrollLeft = pageIndex * pageWidth;
+    
+    PAGES_WRAP.scrollTo({ 
+      left: targetScrollLeft, 
+      behavior: 'smooth' 
+    });
+    
+    setActiveDot(pageIndex);
+  }
+
+  // Touch start
+  document.addEventListener('touchstart', (e) => {
+    const currentPage = getCurrentPageIndex();
+    
+    // BLOCK ALL SWIPING on page 0 (system controls)
+    if (currentPage === 0) {
+      blocked = true;
+      startX = null;
+      startY = null;
+      console.log('BLOCKED: On system controls page - NO SWIPING');
+      return;
+    }
+
+    // On other pages, block only if touching controls
+    if (isControlElement(e.target)) {
+      blocked = true;
+      startX = null;
+      startY = null;
+      console.log('BLOCKED: Touching control element');
+      return;
+    }
+
+    blocked = false;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    dragging = false;
+    console.log(`ALLOWED: Swiping enabled on page ${currentPage}`);
+  }, { passive: true });
+
+  // Touch move
+  document.addEventListener('touchmove', (e) => {
+    if (blocked || startX === null) return;
+    
+    // Double-check: if we're on page 0, block
+    if (getCurrentPageIndex() === 0) {
+      blocked = true;
+      startX = null;
+      startY = null;
+      return;
+    }
+
+    const dx = e.touches[0].clientX - startX;
+    const dy = e.touches[0].clientY - startY;
+
+    // If vertical movement is greater, abort horizontal swipe
+    if (!dragging && Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 10) {
+      startX = null;
+      startY = null;
+      return;
+    }
+
+    // Mark as dragging if horizontal movement is significant
+    if (Math.abs(dx) > 10) {
+      dragging = true;
+    }
+  }, { passive: true });
+
+  // Touch end
+  document.addEventListener('touchend', (e) => {
+    if (blocked) {
+      blocked = false;
+      startX = null;
+      startY = null;
+      return;
+    }
+
+    if (!dragging || startX === null) {
+      startX = null;
+      startY = null;
+      dragging = false;
+      return;
+    }
+
+    const endX = e.changedTouches[0].clientX;
+    const deltaX = startX - endX;
+    const currentPage = getCurrentPageIndex();
+    const totalPages = PAGES_WRAP.children.length;
+
+    console.log(`TOUCHEND: deltaX=${deltaX}, currentPage=${currentPage}`);
+
+    // Only execute swipe if movement is significant enough
+    if (Math.abs(deltaX) > SWIPE_THRESHOLD) {
+      if (deltaX > 0 && currentPage < totalPages - 1) {
+        // Swipe left - go to next page
+        console.log('SWIPING: Next page');
+        goToPage(currentPage + 1);
+      } else if (deltaX < 0 && currentPage > 0) {
+        // Swipe right - go to previous page (INCLUDING back to page 0)
+        console.log('SWIPING: Previous page');
+        goToPage(currentPage - 1);
+      }
+    }
+
+    // Reset
+    startX = null;
+    startY = null;
+    dragging = false;
+  }, { passive: true });
+
+  // Wheel support for desktop
+  let wheelCooldown = 0;
+  PAGES_WRAP.addEventListener('wheel', (e) => {
+    const currentPage = getCurrentPageIndex();
+    
+    // Block wheel on page 0
+    if (currentPage === 0) {
+      console.log('BLOCKED: Wheel navigation disabled on system controls page');
+      return;
+    }
+    
+    const now = Date.now();
+    if (now < wheelCooldown) return;
+    
+    const delta = e.deltaY || e.deltaX;
+    if (Math.abs(delta) < 10) return;
+    
+    const totalPages = PAGES_WRAP.children.length;
+    
+    if (delta > 0 && currentPage < totalPages - 1) {
+      goToPage(currentPage + 1);
+      wheelCooldown = now + 300;
+    } else if (delta < 0 && currentPage > 0) {
+      goToPage(currentPage - 1);
+      wheelCooldown = now + 300;
+    }
+  }, { passive: true });
 }
 
 // initial run
