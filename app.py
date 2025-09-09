@@ -3,9 +3,9 @@ import subprocess
 import os
 import json
 from pathlib import Path
-import shlex
-import sys
-
+from ctypes import POINTER
+from comtypes import CLSCTX_ALL, CoInitialize, CoUninitialize
+from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 # ---------- CONFIG ----------
 CONFIG_PATH = Path(__file__).with_name("app_config.json")
 FLASK_HOST = "0.0.0.0"
@@ -67,18 +67,29 @@ def run_cmd(cmd_list, shell=False):
 
 @app.route("/system/status")
 def system_status():
-    # best-effort: try to read volume via nircmd if available
+
     status = {}
-    # volume via nircmd (returns value 0..65535)
-    nircmd = Path("C:/Windows/nircmd.exe")
-    if nircmd.exists():
-        rc, out, err = run_cmd([str(nircmd), "getvolume"])
-        try:
-            v = int(out.strip())
-            # normalize: nircmd getvolume returns 0-65535
-            status['volume'] = round((v/65535.0)*100)
-        except:
-            pass
+    CoInitialize()
+
+    try:
+        # Get default speakers
+        devices = AudioUtilities.GetSpeakers()
+        # Activate the endpoint volume COM interface
+        interface = devices.Activate(
+            IAudioEndpointVolume._iid_, CLSCTX_ALL, None
+        )
+        # Query the interface properly
+        volume = interface.QueryInterface(IAudioEndpointVolume)
+
+        # Get master volume as scalar 0.0–1.0
+        scalar = volume.GetMasterVolumeLevelScalar()
+        percent = int(round(scalar * 100))
+        status['volume'] = percent
+    except:
+        pass
+    finally:
+        CoUninitialize()
+
     # brightness via powershell WMI (best-effort)
     try:
         ps = ['powershell', '-Command', "(Get-WmiObject -Namespace root/WMI -Class WmiMonitorBrightness).CurrentBrightness"]
