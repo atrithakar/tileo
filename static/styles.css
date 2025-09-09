@@ -185,4 +185,43 @@ html, body {
 /* Prevent any images or text from overflowing their containers */
 img { max-width: 100%; height: auto; display: block; }
 
-/* End of responsive rules */
+/* -------------------------
+   Rotate / portrait overlay
+   ------------------------- */
+#rotateOverlay {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+  background: rgba(6,9,16,0.92);
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+}
+
+#rotateOverlay.show { display: flex; }
+
+#rotateOverlay .box {
+  max-width: 520px;
+  border-radius: 12px;
+  padding: 18px;
+  background: rgba(0,0,0,0.4);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+}
+
+#rotateOverlay .title { font-size: 20px; margin-bottom: 8px; color: var(--accent); }
+#rotateOverlay .desc { font-size: 14px; line-height: 1.4; opacity: 0.95; }
+#rotateOverlay .action {
+  margin-top: 12px; display:flex; gap:8px; justify-content:center;
+}
+#rotateOverlay button {
+  background: var(--accent); color: #032018; padding: 8px 12px; border-radius: 8px; border: none; cursor: pointer;
+}
+#rotateOverlay .secondary {
+  background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* End of file */

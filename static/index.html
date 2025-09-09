@@ -4,7 +4,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Tileo</title>
+  <title>TileO</title>
+
+  <!-- PWA / fullscreen meta -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TileO">
+  <meta name="theme-color" content="#0f1724">
+
+  <link rel="manifest" href="/static/manifest.json">
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 
@@ -12,25 +21,39 @@
   <main class="container">
     <h1 class="title">TileO</h1>
     <div id="grid" class="grid"></div>
+
     <div class="footer">
       <small>Tap an icon to launch on PC</small>
-      <!-- token input container (replace the old token div with this) -->
+
+      <!-- token input container -->
       <div id="tokenContainer" style="display:flex; align-items:center; gap:8px;">
         <label style="margin-right:6px;">Token:</label>
         <input id="token" type="password" placeholder="paste token" />
         <button id="saveToken">Save</button>
       </div>
 
-      <!-- token saved status (hidden until a token exists or is saved) -->
+      <!-- token saved status -->
       <div id="tokenStatus" style="display:none; align-items:center; gap:8px;">
         <small style="margin-right:8px;">Token saved</small>
         <button id="changeToken">Change</button>
       </div>
-
     </div>
   </main>
 
-  <script src="/static/script.js"></script>
+  <!-- Rotate / portrait overlay (landscape helper) -->
+  <div id="rotateOverlay" aria-hidden="true" class="">
+    <div class="box">
+      <div class="title">Rotate your phone</div>
+      <div class="desc">TileO works best in landscape. Please rotate your phone or add TileO to your home screen for the full-screen, landscape experience.</div>
+      <div class="action">
+        <button id="tryFullscreenBtn">Try Fullscreen</button>
+        <button id="a2hsBtn" class="secondary">How to add to Home Screen</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/landscape.js" defer></script>
+  <script src="/static/script.js" defer></script>
 </body>
 
 </html>
