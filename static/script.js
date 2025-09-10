@@ -147,24 +147,38 @@ function buildSystemPage() {
   const mid = document.createElement("div");
   mid.className = "sys-middle";
 
-  // Music card
-  const music = document.createElement("div");
-  music.className = "music-card";
-  music.innerHTML = `
-    <div class="music-title" id="musicTitle">No track</div>
-    <div class="music-progress">
-      <div class="music-time" id="musicTimeLeft">00:00</div>
-      <input id="musicProgress" class="slider music-prog" type="range" min="0" max="100" value="0">
-      <div class="music-time" id="musicTimeRight">00:00</div>
-    </div>
-    <div class="music-controls">
-      <button class="sys-btn" id="musicPrev">⏮</button>
-      <button class="sys-btn" id="musicPlay">⏯</button>
-      <button class="sys-btn" id="musicNext">⏭</button>
-      <button class="sys-btn" id="musicStop">⏹</button>
+  // System monitoring card (replacing music card)
+  const monitoring = document.createElement("div");
+  monitoring.className = "monitoring-card";
+  monitoring.innerHTML = `
+    <div class="monitoring-grid">
+      <div class="monitor-item">
+        <span class="monitor-label">CPU Usage</span>
+        <span class="monitor-value" id="cpuUsage">--%</span>
+      </div>
+      <div class="monitor-item">
+        <span class="monitor-label">CPU Temp</span>
+        <span class="monitor-value" id="cpuTemp">--°C</span>
+      </div>
+      <div class="monitor-item">
+        <span class="monitor-label">GPU Usage</span>
+        <span class="monitor-value" id="gpuUsage">--%</span>
+      </div>
+      <div class="monitor-item">
+        <span class="monitor-label">GPU Temp</span>
+        <span class="monitor-value" id="gpuTemp">--°C</span>
+      </div>
+      <div class="monitor-item">
+        <span class="monitor-label">RAM Usage</span>
+        <span class="monitor-value" id="ramUsage">--%</span>
+      </div>
+      <div class="monitor-item">
+        <span class="monitor-label">Battery</span>
+        <span class="monitor-value" id="batteryLevel">--%</span>
+      </div>
     </div>
   `;
-  mid.appendChild(music);
+  mid.appendChild(monitoring);
 
   // Power card
   const power = document.createElement("div");
@@ -206,8 +220,8 @@ function buildSystemPage() {
   // append system page to pagesWrap
   PAGES_WRAP.appendChild(page);
 
-  // wire controls
-  setTimeout(setupSystemHandlers, 100);
+  // wire controls immediately
+  setupSystemHandlers();
 }
 
 // Setup handlers for system controls
@@ -216,15 +230,6 @@ function setupSystemHandlers() {
   const volVal = document.getElementById("volumeVal");
   const briSlider = document.getElementById("brightnessSlider");
   const briVal = document.getElementById("brightnessVal");
-
-  const musicTitle = document.getElementById("musicTitle");
-  const musicProgress = document.getElementById("musicProgress");
-  const musicTimeLeft = document.getElementById("musicTimeLeft");
-  const musicTimeRight = document.getElementById("musicTimeRight");
-  const musicPlay = document.getElementById("musicPlay");
-  const musicPrev = document.getElementById("musicPrev");
-  const musicNext = document.getElementById("musicNext");
-  const musicStop = document.getElementById("musicStop");
 
   const toggleMute = document.getElementById("toggleMute");
   const toggleTheme = document.getElementById("toggleTheme");
@@ -262,12 +267,6 @@ function setupSystemHandlers() {
     }, 150);
   });
 
-  // music controls
-  musicPlay.addEventListener("click", ()=> fetch("/system/media", { method:"POST", headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'playpause'}) }));
-  musicPrev.addEventListener("click", ()=> fetch("/system/media", { method:"POST", headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'prev'}) }));
-  musicNext.addEventListener("click", ()=> fetch("/system/media", { method:"POST", headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'next'}) }));
-  musicStop.addEventListener("click", ()=> fetch("/system/media", { method:"POST", headers:{'Content-Type':'application/json'}, body: JSON.stringify({action:'stop'}) }));
-
   // toggles
   toggleMute.addEventListener("click", ()=> fetch("/system/mute", { method:"POST" }));
   toggleTheme.addEventListener("click", ()=> fetch("/system/theme", { method:"POST" }));
@@ -302,9 +301,49 @@ function setupSystemHandlers() {
     const hh = String(d.getHours()).padStart(2,'0');
     const mi = String(d.getMinutes()).padStart(2,'0');
     const ss = String(d.getSeconds()).padStart(2,'0');
-    document.getElementById("clockDate").textContent = `${dd}/${mm}/${yyyy}`;
-    document.getElementById("clockTime").textContent = `${hh}:${mi}:${ss}`;
+    const clockDate = document.getElementById("clockDate");
+    const clockTime = document.getElementById("clockTime");
+    if (clockDate) clockDate.textContent = `${dd}/${mm}/${yyyy}`;
+    if (clockTime) clockTime.textContent = `${hh}:${mi}:${ss}`;
   }, 1000);
+}
+
+
+// Update system monitoring data
+function updateSystemMonitoring() {
+  console.log("Updating system monitoring data...");
+  fetch("/system/monitoring").then(r=>r.json()).then(data=>{
+    console.log("Monitoring data received:", data);
+    if (!data) return;
+    try {
+      if (data.cpu_usage !== undefined) {
+        const elem = document.getElementById("cpuUsage");
+        if (elem) elem.textContent = Math.round(data.cpu_usage) + "%";
+      }
+      if (data.cpu_temp !== undefined) {
+        const elem = document.getElementById("cpuTemp");
+        if (elem) elem.textContent = Math.round(data.cpu_temp) + "°C";
+      }
+      if (data.gpu_usage !== undefined) {
+        const elem = document.getElementById("gpuUsage");
+        if (elem) elem.textContent = Math.round(data.gpu_usage) + "%";
+      }
+      if (data.gpu_temp !== undefined) {
+        const elem = document.getElementById("gpuTemp");
+        if (elem) elem.textContent = Math.round(data.gpu_temp) + "°C";
+      }
+      if (data.ram_usage !== undefined) {
+        const elem = document.getElementById("ramUsage");
+        if (elem) elem.textContent = Math.round(data.ram_usage) + "%";
+      }
+      if (data.battery_level !== undefined) {
+        const elem = document.getElementById("batteryLevel");
+        if (elem) elem.textContent = Math.round(data.battery_level) + "%";
+      }
+    } catch(e) { console.warn("monitoring data parse error", e); }
+  }).catch((error)=>{
+    console.error("Failed to fetch monitoring data:", error);
+  });
 }
 
 // Fetch initial system status: volume/brightness (best-effort)
@@ -322,10 +361,6 @@ function refreshSystemStatus(){
         const bs = Math.round(j.brightness);
         const briSlider = document.getElementById("brightnessSlider");
         if (briSlider) { briSlider.value = bs; document.getElementById("brightnessVal").textContent = bs + "%"; }
-      }
-      if (j.now_playing) {
-        const musicTitle = document.getElementById("musicTitle");
-        musicTitle.textContent = j.now_playing.title || "Now playing";
       }
     } catch(e) { console.warn("refresh sys parse", e); }
   }).catch(()=>{});
@@ -387,6 +422,17 @@ async function renderAllPages() {
   // Setup atomic scrolling functionality with selective blocking
   setupSwipePaging();
 }
+
+// initial run
+renderAllPages();
+
+// Setup system monitoring after page loads
+setTimeout(() => {
+  console.log("Setting up system monitoring interval...");
+  setInterval(updateSystemMonitoring, 1000);
+  updateSystemMonitoring(); // Initial update
+  console.log("System monitoring setup complete");
+}, 1000);
 
 // Setup atomic scrolling functionality
 function setupSwipePaging() {
@@ -557,6 +603,3 @@ function setupSwipePaging() {
     }
   }, { passive: true });
 }
-
-// initial run
-renderAllPages();

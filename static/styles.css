@@ -404,66 +404,48 @@ img { max-width: 100%; height: auto; display: block; }
   width: 100%;
 }
 
-/* Music card (large left card) */
-.music-card {
+/* System monitoring card (replaces music card) */
+.monitoring-card {
   background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.03));
   border-radius: 14px;
-  padding: 20px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  justify-content: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.25);
 }
 
-.music-title {
-  font-size: 18px;
+.monitoring-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 8px;
+  height: 100%;
+}
+
+.monitor-item {
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 45px;
+}
+
+.monitor-label {
+  font-size: 11px;
+  color: rgba(230,238,248,0.8);
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+.monitor-value {
+  font-size: 14px;
   font-weight: 600;
   color: var(--text);
-  margin-bottom: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.music-progress {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 16px;
-}
-
-.music-time {
-  font-size: 13px;
-  color: rgba(230,238,248,0.8);
-  min-width: 44px;
-}
-
-.music-prog {
-  flex: 1;
-}
-
-.music-controls {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-}
-
-.music-controls .sys-btn {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 18px !important;
-}
-
-.music-controls .sys-btn:active {
-  transform: scale(0.95);
 }
 
 /* Power options card */
@@ -577,17 +559,25 @@ img { max-width: 100%; height: auto; display: block; }
     gap: 10px;
   }
   
-  .music-card, .power-card, .toggles-card, .clock-card {
+  .monitoring-card, .power-card, .toggles-card, .clock-card {
     padding: 12px;
   }
   
-  .music-title {
-    font-size: 14px;
+  .monitoring-grid {
+    gap: 6px;
   }
   
-  .music-controls .sys-btn {
-    width: 36px;
-    height: 36px;
+  .monitor-item {
+    padding: 6px 8px;
+    min-height: 35px;
+  }
+  
+  .monitor-label {
+    font-size: 9px;
+  }
+  
+  .monitor-value {
+    font-size: 12px;
   }
   
   .power-card .sys-btn {
