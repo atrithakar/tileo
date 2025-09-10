@@ -24,7 +24,7 @@ Step 4: run the following commands
 ```bash
 python -m venv venv (for the first time only)
 ./venv/Scripts/activate (for the first time only)
-pip install flask (for the first time only)
+pip install -r requirements.txt (for the first time only)
 python app.py
 ```
 
