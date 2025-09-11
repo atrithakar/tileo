@@ -429,7 +429,7 @@ renderAllPages();
 // Setup system monitoring after page loads
 setTimeout(() => {
   console.log("Setting up system monitoring interval...");
-  setInterval(updateSystemMonitoring, 1000);
+  setInterval(updateSystemMonitoring, 2000);
   updateSystemMonitoring(); // Initial update
   console.log("System monitoring setup complete");
 }, 1000);
