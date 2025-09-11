@@ -105,7 +105,7 @@ def system_status():
 
 @app.route("/system/monitoring")
 def system_monitoring():
-    print("System monitoring endpoint called")
+    # print("System monitoring endpoint called")
     # Get system monitoring data: CPU, GPU, RAM, Battery
     monitoring = {}
     
@@ -114,12 +114,12 @@ def system_monitoring():
         ps_cpu = ['powershell', '-Command', 
                   'Get-Counter "\\Processor(_Total)\\% Processor Time" | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue']
         code, out, err = run_cmd(ps_cpu)
-        print(f"CPU Usage: code={code}, out='{out.strip()}', err='{err.strip()}'")
+        # print(f"CPU Usage: code={code}, out='{out.strip()}', err='{err.strip()}'")
         if code == 0 and out.strip():
             try:
                 cpu_val = float(out.strip())
                 monitoring['cpu_usage'] = min(100, max(0, cpu_val))
-                print(f"CPU Usage set to: {monitoring['cpu_usage']}")
+                # print(f"CPU Usage set to: {monitoring['cpu_usage']}")
             except Exception as e:
                 print(f"CPU parsing error: {e}")
     except Exception as e:
@@ -131,7 +131,7 @@ def system_monitoring():
         ps_thermal = ['powershell', '-Command', 
                      'Get-WmiObject MSAcpi_ThermalZoneTemperature -Namespace "root/wmi" | ForEach-Object { [PSCustomObject]@{ Zone = $_.InstanceName; TempK = $_.CurrentTemperature; TempC = [math]::Round(($_.CurrentTemperature / 10) - 273.15, 1) } } | Sort-Object TempC -Descending']
         code, out, err = run_cmd(ps_thermal)
-        print(f"CPU Temp (Thermal Zones): code={code}, out='{out.strip()}', err='{err.strip()}'")
+        # print(f"CPU Temp (Thermal Zones): code={code}, out='{out.strip()}', err='{err.strip()}'")
         if code == 0 and out.strip():
             try:
                 # Parse the output to find the highest temperature (likely CPU)
@@ -149,18 +149,18 @@ def system_monitoring():
                 
                 if highest_temp > 0:
                     monitoring['cpu_temp'] = highest_temp
-                    print(f"CPU Temp (Thermal Zones) set to: {monitoring['cpu_temp']}")
+                    # print(f"CPU Temp (Thermal Zones) set to: {monitoring['cpu_temp']}")
                 else:
                     # Fallback: just get the first valid temperature
                     ps_simple = ['powershell', '-Command', 
                                'Get-WmiObject MSAcpi_ThermalZoneTemperature -Namespace "root/wmi" | Select-Object -First 1 -ExpandProperty CurrentTemperature']
                     code2, out2, err2 = run_cmd(ps_simple)
-                    print(f"CPU Temp (Simple Thermal): code={code2}, out='{out2.strip()}', err='{err2.strip()}'")
+                    # print(f"CPU Temp (Simple Thermal): code={code2}, out='{out2.strip()}', err='{err2.strip()}'")
                     if code2 == 0 and out2.strip():
                         temp_val = float(out2.strip())
                         temp_c = (temp_val / 10) - 273.15
                         monitoring['cpu_temp'] = round(temp_c, 1)
-                        print(f"CPU Temp (Simple Thermal) set to: {monitoring['cpu_temp']}")
+                        # print(f"CPU Temp (Simple Thermal) set to: {monitoring['cpu_temp']}")
                         
             except Exception as e:
                 print(f"CPU temp thermal parsing error: {e}")
@@ -168,28 +168,28 @@ def system_monitoring():
                 ps_simple = ['powershell', '-Command', 
                            'Get-WmiObject MSAcpi_ThermalZoneTemperature -Namespace "root/wmi" | Select-Object -First 1 -ExpandProperty CurrentTemperature']
                 code2, out2, err2 = run_cmd(ps_simple)
-                print(f"CPU Temp (Fallback): code={code2}, out='{out2.strip()}', err='{err2.strip()}'")
+                # print(f"CPU Temp (Fallback): code={code2}, out='{out2.strip()}', err='{err2.strip()}'")
                 if code2 == 0 and out2.strip():
                     temp_val = float(out2.strip())
                     temp_c = (temp_val / 10) - 273.15
                     monitoring['cpu_temp'] = round(temp_c, 1)
-                    print(f"CPU Temp (Fallback) set to: {monitoring['cpu_temp']}")
+                    # print(f"CPU Temp (Fallback) set to: {monitoring['cpu_temp']}")
         
         # Second try: Get all thermal zones and pick the highest reasonable one
         if 'cpu_temp' not in monitoring:
             ps_all_zones = ['powershell', '-Command', 
                            'Get-WmiObject MSAcpi_ThermalZoneTemperature -Namespace "root/wmi" | ForEach-Object { ($_.CurrentTemperature / 10) - 273.15 } | Where-Object { $_ -gt 25 -and $_ -lt 100 } | Sort-Object -Descending | Select-Object -First 1']
             code, out, err = run_cmd(ps_all_zones)
-            print(f"CPU Temp (All Zones): code={code}, out='{out.strip()}', err='{err.strip()}'")
+            # print(f"CPU Temp (All Zones): code={code}, out='{out.strip()}', err='{err.strip()}'")
             if code == 0 and out.strip():
                 try:
                     temp_c = float(out.strip())
                     monitoring['cpu_temp'] = round(temp_c, 1)
-                    print(f"CPU Temp (All Zones) set to: {monitoring['cpu_temp']}")
+                    # print(f"CPU Temp (All Zones) set to: {monitoring['cpu_temp']}")
                 except Exception as e:
                     print(f"CPU temp all zones parsing error: {e}")
                     
-        print(f"CPU temperature detection completed. Found: {'cpu_temp' in monitoring}")
+        # print(f"CPU temperature detection completed. Found: {'cpu_temp' in monitoring}")
     except Exception as e:
         print(f"CPU temp command error: {e}")
     
@@ -207,29 +207,29 @@ def system_monitoring():
                 break
         
         if nvidia_smi:
-            print(f"Using NVIDIA-SMI at: {nvidia_smi}")
+            # print(f"Using NVIDIA-SMI at: {nvidia_smi}")
             
             # GPU Usage
             gpu_usage_cmd = [str(nvidia_smi), '--query-gpu=utilization.gpu', '--format=csv,noheader,nounits']
             code, out, err = run_cmd(gpu_usage_cmd)
-            print(f"GPU Usage: code={code}, out='{out.strip()}', err='{err.strip()}'")
+            # print(f"GPU Usage: code={code}, out='{out.strip()}', err='{err.strip()}'")
             if code == 0 and out.strip():
                 try:
                     gpu_usage = float(out.strip())
                     monitoring['gpu_usage'] = max(0, min(100, gpu_usage))
-                    print(f"GPU Usage set to: {monitoring['gpu_usage']}")
+                    # print(f"GPU Usage set to: {monitoring['gpu_usage']}")
                 except Exception as e:
                     print(f"GPU usage parsing error: {e}")
             
             # GPU Temperature
             gpu_temp_cmd = [str(nvidia_smi), '--query-gpu=temperature.gpu', '--format=csv,noheader,nounits']
             code, out, err = run_cmd(gpu_temp_cmd)
-            print(f"GPU Temp: code={code}, out='{out.strip()}', err='{err.strip()}'")
+            # print(f"GPU Temp: code={code}, out='{out.strip()}', err='{err.strip()}'")
             if code == 0 and out.strip():
                 try:
                     gpu_temp = float(out.strip())
                     monitoring['gpu_temp'] = gpu_temp
-                    print(f"GPU Temp set to: {monitoring['gpu_temp']}")
+                    # print(f"GPU Temp set to: {monitoring['gpu_temp']}")
                 except Exception as e:
                     print(f"GPU temp parsing error: {e}")
         else:
@@ -243,11 +243,11 @@ def system_monitoring():
         ps_ram = ['powershell', '-Command', 
                   '$mem = Get-WmiObject -Class Win32_OperatingSystem; [math]::Round(($mem.TotalVisibleMemorySize - $mem.FreePhysicalMemory) / $mem.TotalVisibleMemorySize * 100, 1)']
         code, out, err = run_cmd(ps_ram)
-        print(f"RAM Usage: code={code}, out='{out.strip()}', err='{err.strip()}'")
+        # print(f"RAM Usage: code={code}, out='{out.strip()}', err='{err.strip()}'")
         if code == 0 and out.strip():
             try:
                 monitoring['ram_usage'] = float(out.strip())
-                print(f"RAM Usage set to: {monitoring['ram_usage']}")
+                # print(f"RAM Usage set to: {monitoring['ram_usage']}")
             except Exception as e:
                 print(f"RAM parsing error: {e}")
     except Exception as e:
@@ -258,11 +258,11 @@ def system_monitoring():
         ps_battery = ['powershell', '-Command', 
                       'Get-WmiObject -Class Win32_Battery | Select-Object -ExpandProperty EstimatedChargeRemaining']
         code, out, err = run_cmd(ps_battery)
-        print(f"Battery: code={code}, out='{out.strip()}', err='{err.strip()}'")
+        # print(f"Battery: code={code}, out='{out.strip()}', err='{err.strip()}'")
         if code == 0 and out.strip():
             try:
                 monitoring['battery_level'] = float(out.strip())
-                print(f"Battery set to: {monitoring['battery_level']}")
+                # print(f"Battery set to: {monitoring['battery_level']}")
             except Exception as e:
                 print(f"Battery parsing error: {e}")
     except Exception as e:
@@ -282,7 +282,7 @@ def system_monitoring():
     if 'battery_level' not in monitoring:
         monitoring['battery_level'] = -1  # dummy value for testing
     
-    print(f"Final monitoring data: {monitoring}")
+    # print(f"Final monitoring data: {monitoring}")
     return jsonify(monitoring)
 
 @app.route("/system/volume", methods=["POST"])
